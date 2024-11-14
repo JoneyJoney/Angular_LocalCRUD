@@ -3,7 +3,7 @@
 <div class="row">
   <div class="container mt-5">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-8">
         <div class="card">
           <div class="card-header text-center bg-success">
             <h4>Employee Data</h4>
@@ -32,9 +32,9 @@
                   <td>{{item.emppassword}}</td>
                   <td>{{item.empcity}}</td>
                   <td>{{item.empstatus}}</td>
-                  <td>
-                    <button type="button" class="btn btn-primary mr-2">Edit</button>
-                    <button type="button" class="btn btn-danger">Delete</button>
+                  <td class="d-flex gap-2">
+                    <button type="button" (click)="onEdit(item)" class="btn btn-primary mr-2">Edit</button>
+                    <button type="button" (click)="onDelete(item.empid)" class="btn btn-danger">Delete</button>
                   </td>
                   
                 </tr>
@@ -46,7 +46,7 @@
         </div>
       </div>
 
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div class="card">
           <div class="card-header text-center bg-success">
             <h4>Add Employee</h4>
@@ -56,29 +56,84 @@
               <div class="form-group">
                 <label>Emp Name</label>
                 <input type="text" formControlName="empname" class="form-control" placeholder="Enter your name">
+                <div class="text-danger">
+                @if (this.employeeform.controls['empname'].touched) {
+                  @if(this.employeeform.controls['empname'].errors?.['required'])
+                  {
+                    <span>Name is Required</span>
+                  }
+                }
+              </div>
               </div>
               <div class="form-group mt-3">
                 <label>Emp Email</label>
                 <input type="email" formControlName="empemail" class="form-control"  placeholder="Enter your email">
+                <div class="text-danger">
+                  @if (this.employeeform.controls['empemail'].touched) {
+                    @if(this.employeeform.controls['empemail'].errors?.['required'])
+                    {
+                      <span>Email is Required</span>
+                    }
+                    @if(this.employeeform.controls['empemail'].errors?.['email'])
+                    {
+                      <span>Email is not Required</span>
+                    }
+                  }
+                </div>
               </div>
               <div class="form-group mt-3">
                 <label>Emp MobileNo</label>
                 <input type="text" formControlName="empmobile" class="form-control" placeholder="Enter your mobile">
+                <div class="text-danger">
+                  @if (this.employeeform.controls['empmobile'].touched) {
+                    @if(this.employeeform.controls['empmobile'].errors?.['required'])
+                    {
+                      <span>Mobile is Required</span>
+                    }
+                    @if(this.employeeform.controls['empmobile'].errors?.['minlength'])
+                    {
+                      <span>Mobile is min 10 in length</span>
+                    }
+                  }
+                </div>
               </div>
               <div class="form-group mt-3">
                 <label>Emp Password</label>
                 <input type="password" formControlName="emppassword" class="form-control" placeholder="Enter your password">
+                <div class="text-danger">
+                  @if (this.employeeform.controls['emppassword'].touched) {
+                    @if(this.employeeform.controls['emppassword'].errors?.['required'])
+                    {
+                      <span>Password is Required</span>
+                    }
+                  }
+                </div>
               </div>
               <div class="form-group mt-3">
                 <label>Emp City</label>
                 <input type="text" formControlName="empcity" class="form-control"  placeholder="Enter your City">
+                <div class="text-danger">
+                  @if (this.employeeform.controls['empcity'].touched) {
+                    @if(this.employeeform.controls['empcity'].errors?.['required'])
+                    {
+                      <span>City is Required</span>
+                    }
+                  }
+                </div>
               </div>
               <div class="form-group mt-3">
                 <label class="d-flex gap-2">Emp Status</label>
                 <input class="form-check-input" formControlName="empstatus" type="checkbox" value="" id="defaultCheck1">
               </div>
               <div class="form-group mt-3 d-flex gap-2">
-                <button type="button" (click)="SaveData()" class="btn btn-success">Submit</button>
+                @if(employeeform.controls['empid'].value == "0")
+                {
+                <button type="button" (click)="SaveData()" [disabled]="employeeform.invalid" class="btn btn-success">Submit</button>
+                }
+                @else
+                {
+                  <button type="button" (click)="UpdateData()" [disabled]="employeeform.invalid" class="btn btn-warning">Update</button>
+                }
 
                 <button type="button" class="btn btn-danger">Reset</button>
               </div>

@@ -9,7 +9,7 @@ export class Employee{
 
     constructor()
     {
-        this.empid = 1;
+        this.empid = 0;
         this.empname = "";
         this.empemail = "";
         this.empmobile = "";

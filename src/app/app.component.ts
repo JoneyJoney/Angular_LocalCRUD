@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Employee } from './Model/Employee';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -33,11 +33,11 @@ constructor()
   {
     this.employeeform = new FormGroup({
       empid : new FormControl(this.employeeobj.empid),
-      empname : new FormControl(this.employeeobj.empname),
-      empemail : new FormControl(this.employeeobj.empemail),
-      empmobile : new FormControl(this.employeeobj.empmobile),
-      emppassword : new FormControl(this.employeeobj.emppassword),
-      empcity : new FormControl(this.employeeobj.empcity),
+      empname : new FormControl(this.employeeobj.empname,[Validators.required]),
+      empemail : new FormControl(this.employeeobj.empemail,[Validators.required,Validators.email]),
+      empmobile : new FormControl(this.employeeobj.empmobile,[Validators.required,Validators.minLength(10)]),
+      emppassword : new FormControl(this.employeeobj.emppassword,[Validators.required]),
+      empcity : new FormControl(this.employeeobj.empcity,[Validators.required]),
       empstatus : new FormControl(this.employeeobj.empstatus)
     })
   }
@@ -59,10 +59,50 @@ constructor()
       this.employeeList.unshift(this.employeeform.value);
     }
     else{
+      this.employeeform.controls['empid'].setValue(1);
       this.employeeList.unshift(this.employeeform.value);
     }
     localStorage.setItem("empdata",JSON.stringify(this.employeeList));
     this.reset();
+  }
+  onEdit(item:Employee)
+  {
+    this.employeeobj = item;
+    this.createform();
+  }
+
+  UpdateData()
+  {
+    const updaterecord = this.employeeList.find(x => x.empid == this.employeeform.controls['empid'].value)
+    if(updaterecord != null)
+    {
+      updaterecord.empname = this.employeeform.controls['empname'].value;
+      updaterecord.empemail = this.employeeform.controls['empemail'].value;
+      updaterecord.empmobile = this.employeeform.controls['empmobile'].value;
+      updaterecord.emppassword = this.employeeform.controls['emppassword'].value;
+      updaterecord.empcity = this.employeeform.controls['empcity'].value;
+      updaterecord.empstatus = this.employeeform.controls['empstatus'].value;
+
+    }
+    localStorage.setItem("empdata",JSON.stringify(this.employeeList));
+    this.employeeobj = new Employee();
+    this.createform();
+    
+
+  }
+
+  onDelete(id:number)
+  {
+    const delmsg = confirm('Are You Sure Want to Delete?');
+    if(delmsg)
+    {
+      const indexid = this.employeeList.findIndex(x=> x.empid == id);
+      if(indexid != null)
+      {
+        this.employeeList.splice(indexid,1);
+        localStorage.setItem("empdata",JSON.stringify(this.employeeList));
+      }
+    }
   }
 
   
